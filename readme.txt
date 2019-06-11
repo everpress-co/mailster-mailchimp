@@ -1,4 +1,4 @@
-=== Mailster Importer for Mailchimp ===
+=== Mailchimp Importer for Mailster ===
 Contributors: everpress
 Tags: mailster, newsletter, mailchimp
 Requires at least: 4.6

@@ -50,7 +50,7 @@ class MailsterMerlin extends Merlin {
 	protected function footer() {
 
 		$suffix = SCRIPT_DEBUG ? '' : '.min';
-		$suffix = '';
+
 		wp_enqueue_style( 'mailster-mailchimp', $this->plugin_url . 'assets/css/style' . $suffix . '.css', array(), MAILSTER_MAILCHIMP_VERSION );
 		wp_enqueue_script( 'mailster-mailchimp', $this->plugin_url . 'assets/js/script' . $suffix . '.js', array( 'jquery' ), MAILSTER_MAILCHIMP_VERSION );
 
