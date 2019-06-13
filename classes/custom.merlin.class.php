@@ -19,9 +19,6 @@ class MailsterMerlin extends Merlin {
 
 	public function steps() {
 
-		unset( $this->steps['child'] );
-		unset( $this->steps['child'] );
-
 		$this->steps = array(
 			'welcome' => array(
 				'name'    => esc_html__( 'Welcome', 'mailster-mailchimp' ),
