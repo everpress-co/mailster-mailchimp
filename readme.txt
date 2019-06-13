@@ -3,7 +3,7 @@ Contributors: everpress
 Tags: mailster, newsletter, mailchimp
 Requires at least: 4.6
 Tested up to: 5.2
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 Author: EverPress
 Author URI: https://everpress.co
@@ -21,6 +21,9 @@ https://youtu.be/Xf1YWexBhg4
 3. Go to Tools => Mailchimp Import and follow the wizard
 
 == Changelog ==
+
+= 1.0.2 =
+* fixed: missing script files
 
 = 1.0.1 =
 * fixed: Call to a member function get_tgmpa_url() on null
