@@ -2,15 +2,15 @@
 
 class MailsterMailchimpAPI {
 
-	private $domain = 'api.mailchimp.com';
-	private $version = '3.0';
+	private $domain      = 'api.mailchimp.com';
+	private $version     = '3.0';
 	private $total_items = null;
 
 	public function __construct( $apikey ) {
 
 		$this->apikey = $apikey;
-		$this->dc = preg_replace( '/^([a-f0-9]+)-([a-z0-9]+)$/', '$2', $apikey );
-		$this->url = trailingslashit( 'https://' . $this->dc . '.' . $this->domain . '/' . $this->version );
+		$this->dc     = preg_replace( '/^([a-f0-9]+)-([a-z0-9]+)$/', '$2', $apikey );
+		$this->url    = trailingslashit( 'https://' . $this->dc . '.' . $this->domain . '/' . $this->version );
 
 	}
 
@@ -81,12 +81,15 @@ class MailsterMailchimpAPI {
 		}
 
 		$this->total_items = null;
-		$response = wp_remote_request( $url, array(
-			'method' => $method,
-			'headers' => $headers,
-			'timeout' => $timeout,
-			'body' => $body,
-		) );
+		$response          = wp_remote_request(
+			$url,
+			array(
+				'method'  => $method,
+				'headers' => $headers,
+				'timeout' => $timeout,
+				'body'    => $body,
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;

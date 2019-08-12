@@ -20,7 +20,7 @@ if ( ! class_exists( 'MailsterMerlin' ) ) {
 
 $wizard = new MailsterMerlin(
 
-	$config = array(
+	$config  = array(
 		'directory'            => '../../plugins/mailster-mailchimp/classes/merlin', // Location / directory where Merlin WP is placed in your theme.
 		'plugin_path'          => $this->plugin_path, // Location / directory where Merlin WP is placed in your theme.
 		'plugin_url'           => $this->plugin_url, // Location / directory where Merlin WP is placed in your theme.
@@ -80,6 +80,6 @@ $wizard = new MailsterMerlin(
 		'ready-big-button'         => function_exists( 'mailster' ) ? esc_html__( 'Back to Mailster Dashboard', 'mailster-mailchimp' ) : esc_html__( 'Get Mailster now!', 'mailster-mailchimp' ),
 		'ready-link-1'             => sprintf( '<a href="%1$s" target="_blank">%2$s</a>', 'https://mailster.co/go/buy', esc_html__( 'Buy Mailster', 'mailster-mailchimp' ) ),
 		'ready-link-2'             => sprintf( '<a href="%1$s" target="_blank">%2$s</a>', 'https://mailster.co/support', esc_html__( 'Get Support', 'mailster-mailchimp' ) ),
-		'rseady-link-3'             => sprintf( '<a href="%1$s">%2$s</a>', admin_url( 'customize.php' ), esc_html__( 'Start Customizing', 'mailster-mailchimp' ) ),
+		'rseady-link-3'            => sprintf( '<a href="%1$s">%2$s</a>', admin_url( 'customize.php' ), esc_html__( 'Start Customizing', 'mailster-mailchimp' ) ),
 	)
 );

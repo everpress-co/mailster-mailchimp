@@ -7,9 +7,11 @@ if ( $set_charset && $wpdb->has_cap( 'collation' ) ) {
 	$collate = $wpdb->get_charset_collate();
 }
 
-$tables = apply_filters( 'mailster_table_structure', array(
+$tables = apply_filters(
+	'mailster_table_structure',
+	array(
 
-	"CREATE TABLE {$wpdb->prefix}mailster_subscribers (
+		"CREATE TABLE {$wpdb->prefix}mailster_subscribers (
         `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         `hash` varchar(32) NOT NULL,
         `email` varchar(191) NOT NULL,
@@ -30,7 +32,7 @@ $tables = apply_filters( 'mailster_table_structure', array(
         KEY `rating` (`rating`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_subscriber_fields (
+		"CREATE TABLE {$wpdb->prefix}mailster_subscriber_fields (
         `subscriber_id` bigint(20) unsigned NOT NULL,
         `meta_key` varchar(191) NOT NULL,
         `meta_value` longtext NOT NULL,
@@ -39,7 +41,7 @@ $tables = apply_filters( 'mailster_table_structure', array(
         KEY `meta_key` (`meta_key`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_subscriber_meta (
+		"CREATE TABLE {$wpdb->prefix}mailster_subscriber_meta (
         `subscriber_id` bigint(20) unsigned NOT NULL,
         `campaign_id` bigint(20) unsigned NOT NULL,
         `meta_key` varchar(191) NOT NULL,
@@ -50,7 +52,7 @@ $tables = apply_filters( 'mailster_table_structure', array(
         KEY `meta_key` (`meta_key`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_queue (
+		"CREATE TABLE {$wpdb->prefix}mailster_queue (
         `subscriber_id` bigint(20) unsigned NOT NULL DEFAULT 0,
         `campaign_id` bigint(20) unsigned NOT NULL DEFAULT 0,
         `requeued` tinyint(1) unsigned NOT NULL DEFAULT 0,
@@ -74,7 +76,7 @@ $tables = apply_filters( 'mailster_table_structure', array(
         KEY `ignore_status` (`ignore_status`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_actions (
+		"CREATE TABLE {$wpdb->prefix}mailster_actions (
         `subscriber_id` bigint(20) unsigned NULL DEFAULT NULL,
         `campaign_id` bigint(20) unsigned NULL DEFAULT NULL,
         `timestamp` int(11) unsigned NOT NULL DEFAULT 0,
@@ -87,14 +89,14 @@ $tables = apply_filters( 'mailster_table_structure', array(
         KEY `type` (`type`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_links (
+		"CREATE TABLE {$wpdb->prefix}mailster_links (
         `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         `link` varchar(2083) NOT NULL,
         `i` tinyint(1) unsigned NOT NULL,
         PRIMARY KEY  (`ID`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_lists (
+		"CREATE TABLE {$wpdb->prefix}mailster_lists (
         `ID` bigint(20) NOT NULL AUTO_INCREMENT,
         `parent_id` bigint(20) unsigned NOT NULL,
         `name` varchar(191) NOT NULL,
@@ -107,7 +109,7 @@ $tables = apply_filters( 'mailster_table_structure', array(
         UNIQUE KEY `slug` (`slug`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_lists_subscribers (
+		"CREATE TABLE {$wpdb->prefix}mailster_lists_subscribers (
         `list_id` bigint(20) unsigned NOT NULL,
         `subscriber_id` bigint(20) unsigned NOT NULL,
         `added` int(11) unsigned NOT NULL,
@@ -116,7 +118,7 @@ $tables = apply_filters( 'mailster_table_structure', array(
         KEY `subscriber_id` (`subscriber_id`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_forms (
+		"CREATE TABLE {$wpdb->prefix}mailster_forms (
         `ID` bigint(20) NOT NULL AUTO_INCREMENT,
         `name` varchar(191) NOT NULL DEFAULT '',
         `submit` varchar(191) NOT NULL DEFAULT '',
@@ -148,7 +150,7 @@ $tables = apply_filters( 'mailster_table_structure', array(
         PRIMARY KEY  (`ID`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_form_fields (
+		"CREATE TABLE {$wpdb->prefix}mailster_form_fields (
         `form_id` bigint(20) unsigned NOT NULL,
         `field_id` varchar(191) NOT NULL,
         `name` longtext NOT NULL,
@@ -158,7 +160,7 @@ $tables = apply_filters( 'mailster_table_structure', array(
         UNIQUE KEY `id` (`form_id`,`field_id`)
     ) $collate;",
 
-	"CREATE TABLE {$wpdb->prefix}mailster_forms_lists (
+		"CREATE TABLE {$wpdb->prefix}mailster_forms_lists (
         `form_id` bigint(20) unsigned NOT NULL,
         `list_id` bigint(20) unsigned NOT NULL,
         `added` int(11) unsigned NOT NULL,
@@ -167,4 +169,6 @@ $tables = apply_filters( 'mailster_table_structure', array(
         KEY `list_id` (`list_id`)
     ) $collate;",
 
-), $collate);
+	),
+	$collate
+);

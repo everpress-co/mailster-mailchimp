@@ -12,7 +12,7 @@ class MailsterMailchimp {
 	public function __construct() {
 
 		$this->plugin_path = plugin_dir_path( MAILSTER_MAILCHIMP_FILE );
-		$this->plugin_url = plugin_dir_url( MAILSTER_MAILCHIMP_FILE );
+		$this->plugin_url  = plugin_dir_url( MAILSTER_MAILCHIMP_FILE );
 
 		register_activation_hook( MAILSTER_MAILCHIMP_FILE, array( &$this, 'activate' ) );
 		register_deactivation_hook( MAILSTER_MAILCHIMP_FILE, array( &$this, 'deactivate' ) );
@@ -83,19 +83,22 @@ class MailsterMailchimp {
 		switch ( $endpoint ) {
 			case 'lists':
 				$lists = $this->api()->lists();
-				wp_send_json_success( array(
-					'lists' => $lists,
-				) );
+				wp_send_json_success(
+					array(
+						'lists' => $lists,
+					)
+				);
 				break;
 			case 'import_list':
-
 				if ( ! isset( $_POST['id'] ) ) {
-					wp_send_json_error( array(
-						'message' => 'no list',
-					) );
+					wp_send_json_error(
+						array(
+							'message' => 'no list',
+						)
+					);
 				}
 
-				$limit = isset( $_POST['limit'] ) ? (int) $_POST['limit'] : 100;
+				$limit  = isset( $_POST['limit'] ) ? (int) $_POST['limit'] : 100;
 				$offset = isset( $_POST['offset'] ) ? (int) $_POST['offset'] : 0;
 				$status = isset( $_POST['status'] ) ? (array) $_POST['status'] : array( 'subscribed' );
 
@@ -103,27 +106,34 @@ class MailsterMailchimp {
 
 				$mailster_list_id = $this->get_mailster_list_id( $list_id );
 
-				$subscribers = $this->api()->members($list_id, array(
-					'count' => $limit,
-					'offset' => $offset,
-					'status' => $status,
-				));
+				$subscribers = $this->api()->members(
+					$list_id,
+					array(
+						'count'  => $limit,
+						'offset' => $offset,
+						'status' => $status,
+					)
+				);
 
 				$this->import_subscribers( $subscribers, $list_id );
 
-				wp_send_json_success( array(
-					'total' => $this->api()->get_total_items( ),
-					'added' => count( $subscribers ),
-					'subscribers' => count( $subscribers ),
-				) );
+				wp_send_json_success(
+					array(
+						'total'       => $this->api()->get_total_items(),
+						'added'       => count( $subscribers ),
+						'subscribers' => count( $subscribers ),
+					)
+				);
 
 				break;
 			case 'verify_api_key':
 				$result = $this->api()->ping();
 				if ( $result ) {
-					wp_send_json_success( array(
-						'message' => $result->health_status,
-					) );
+					wp_send_json_success(
+						array(
+							'message' => $result->health_status,
+						)
+					);
 				}
 
 				break;
@@ -149,35 +159,41 @@ class MailsterMailchimp {
 
 		global $wpdb;
 
-		$stati = array( 'subscribed' => 1, 'unsubscribed' => 2, 'cleaned' => 3, 'pending' => 0, 'transactional' => 1 );
+		$stati = array(
+			'subscribed'    => 1,
+			'unsubscribed'  => 2,
+			'cleaned'       => 3,
+			'pending'       => 0,
+			'transactional' => 1,
+		);
 
 		$mailster_list_id = $this->get_mailster_list_id( $list_id );
 
 		$entry = array(
-			'email' => $subscriber->email_address,
-			'hash' => md5( $subscriber->email_address ),
-			'added' => $subscriber->timestamp_signup ? strtotime( $subscriber->timestamp_signup ) : time(),
-			'status' => isset( $stati[ $subscriber->status ] ) ? $stati[ $subscriber->status ] : 1,
-			'updated' => $subscriber->last_changed ? strtotime( $subscriber->last_changed ) : 0,
-			'signup' => $subscriber->timestamp_signup ? strtotime( $subscriber->timestamp_signup ) : 0,
-			'confirm' => $subscriber->timestamp_opt ? strtotime( $subscriber->timestamp_opt ) : 0,
-			'ip_signup' => $subscriber->ip_signup,
+			'email'      => $subscriber->email_address,
+			'hash'       => md5( $subscriber->email_address ),
+			'added'      => $subscriber->timestamp_signup ? strtotime( $subscriber->timestamp_signup ) : time(),
+			'status'     => isset( $stati[ $subscriber->status ] ) ? $stati[ $subscriber->status ] : 1,
+			'updated'    => $subscriber->last_changed ? strtotime( $subscriber->last_changed ) : 0,
+			'signup'     => $subscriber->timestamp_signup ? strtotime( $subscriber->timestamp_signup ) : 0,
+			'confirm'    => $subscriber->timestamp_opt ? strtotime( $subscriber->timestamp_opt ) : 0,
+			'ip_signup'  => $subscriber->ip_signup,
 			'ip_confirm' => $subscriber->ip_opt,
 		);
 
 		$custom_fields = array(
 			'firstname' => $subscriber->merge_fields->FNAME,
-			'lastname' => $subscriber->merge_fields->LNAME,
+			'lastname'  => $subscriber->merge_fields->LNAME,
 		);
 
 		$meta = array(
-			'lang' => $subscriber->language,
-			'client' => $subscriber->email_client,
-			'referer' => 'Mailchimp' . ( ! empty( $subscriber->source ) ? ' (' . $subscriber->source . ')' : null),
-			'coords' => $subscriber->location->latitude ? $subscriber->location->latitude . '|' . $subscriber->location->longitude : null,
-			'geo' => $subscriber->location->country_code ? $subscriber->location->country_code . '|' : null,
+			'lang'       => $subscriber->language,
+			'client'     => $subscriber->email_client,
+			'referer'    => 'Mailchimp' . ( ! empty( $subscriber->source ) ? ' (' . $subscriber->source . ')' : null ),
+			'coords'     => $subscriber->location->latitude ? $subscriber->location->latitude . '|' . $subscriber->location->longitude : null,
+			'geo'        => $subscriber->location->country_code ? $subscriber->location->country_code . '|' : null,
 			'timeoffset' => $subscriber->location->gmtoff,
-			'ip' => $subscriber->ip_opt,
+			'ip'         => $subscriber->ip_opt,
 		);
 
 		$subscriber_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->prefix}mailster_subscribers WHERE email = %s", $subscriber->email_address ) );
@@ -208,30 +224,39 @@ class MailsterMailchimp {
 			}
 
 			if ( $subscriber_id ) {
-				$wpdb->insert("{$wpdb->prefix}mailster_lists_subscribers", array(
-					'list_id' => $mailster_list_id,
-					'subscriber_id' => $subscriber_id,
-					'added' => $entry['added'],
-				));
+				$wpdb->insert(
+					"{$wpdb->prefix}mailster_lists_subscribers",
+					array(
+						'list_id'       => $mailster_list_id,
+						'subscriber_id' => $subscriber_id,
+						'added'         => $entry['added'],
+					)
+				);
 				foreach ( $custom_fields as $key => $value ) {
 					if ( empty( $value ) ) {
 						continue;
 					}
-					$wpdb->insert("{$wpdb->prefix}mailster_subscriber_fields", array(
-						'subscriber_id' => $subscriber_id,
-						'meta_key' => $key,
-						'meta_value' => $value,
-					));
+					$wpdb->insert(
+						"{$wpdb->prefix}mailster_subscriber_fields",
+						array(
+							'subscriber_id' => $subscriber_id,
+							'meta_key'      => $key,
+							'meta_value'    => $value,
+						)
+					);
 				}
 				foreach ( $meta as $key => $value ) {
 					if ( empty( $value ) ) {
 						continue;
 					}
-					$wpdb->insert("{$wpdb->prefix}mailster_subscriber_meta", array(
-						'subscriber_id' => $subscriber_id,
-						'meta_key' => $key,
-						'meta_value' => $value,
-					));
+					$wpdb->insert(
+						"{$wpdb->prefix}mailster_subscriber_meta",
+						array(
+							'subscriber_id' => $subscriber_id,
+							'meta_key'      => $key,
+							'meta_value'    => $value,
+						)
+					);
 				}
 			}
 		}
@@ -249,11 +274,11 @@ class MailsterMailchimp {
 
 		$entry = array(
 			'parent_id' => 0,
-			'name' => $list->name,
-			'slug' => sanitize_title( $list->name ),
-			//'description' => 'Mailchimp Import',
-			'added' => strtotime( $list->date_created ),
-			'updated' => time(),
+			'name'      => $list->name,
+			'slug'      => sanitize_title( $list->name ),
+			// 'description' => 'Mailchimp Import',
+			'added'     => strtotime( $list->date_created ),
+			'updated'   => time(),
 		);
 
 		$exists = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->prefix}mailster_lists WHERE name = %s", $list->name ) );
@@ -305,14 +330,14 @@ class MailsterMailchimp {
 		foreach ( $tables as $tablequery ) {
 			if ( $result = dbDelta( $tablequery, $execute ) ) {
 				$results[] = array(
-					'error' => $wpdb->last_error,
+					'error'  => $wpdb->last_error,
 					'output' => implode( ', ', $result ),
 				);
 			}
 		}
 
 		foreach ( $results as $result ) {
-			$return .= ( ! empty( $result['error'] ) ? $result['error'] . ' => ' : '') . $result['output'] . "\n";
+			$return .= ( ! empty( $result['error'] ) ? $result['error'] . ' => ' : '' ) . $result['output'] . "\n";
 		}
 		if ( $output ) {
 			echo $return;
