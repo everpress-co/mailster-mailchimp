@@ -2,7 +2,7 @@
 Contributors: everpress
 Tags: mailster, newsletter, mailchimp
 Requires at least: 4.6
-Tested up to: 5.2
+Tested up to: 5.3
 Stable tag: 1.0.2
 License: GPLv2 or later
 Author: EverPress
@@ -33,6 +33,6 @@ https://youtu.be/Xf1YWexBhg4
 
 == Upgrade Notice ==
 
-== Additional Info One ==
+== Additional Info ==
 
 > You can import your contacts but you need the [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailchimp) to send campaigns to your subscribers.
