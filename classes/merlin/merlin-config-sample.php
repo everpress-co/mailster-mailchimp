@@ -17,9 +17,8 @@ if ( ! class_exists( 'Merlin' ) ) {
 /**
  * Set directory locations, text strings, and settings.
  */
-$wizard = new Merlin(
-
-	$config = array(
+$wizard      = new Merlin(
+	$config  = array(
 		'directory'            => 'merlin', // Location / directory where Merlin WP is placed in your theme.
 		'merlin_url'           => 'merlin', // The wp-admin page slug where Merlin WP loads.
 		'parent_slug'          => 'themes.php', // The wp-admin parent page slug for the admin menu item.

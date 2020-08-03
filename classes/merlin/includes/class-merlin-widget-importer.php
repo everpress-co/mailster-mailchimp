@@ -215,7 +215,7 @@ class Merlin_Widget_Importer {
 					// If key is 0, make it 1.
 					// When 0, an issue can occur where adding a widget causes data from other widget to load, and the widget doesn't stick (reload wipes it).
 					if ( '0' === strval( $new_instance_id_number ) ) {
-						$new_instance_id_number                           = 1;
+						$new_instance_id_number                             = 1;
 						$single_widget_instances[ $new_instance_id_number ] = $single_widget_instances[0];
 						unset( $single_widget_instances[0] );
 					}
@@ -231,8 +231,8 @@ class Merlin_Widget_Importer {
 					update_option( 'widget_' . $id_base, $single_widget_instances );
 
 					// Assign widget instance to sidebar.
-					$sidebars_widgets = get_option( 'sidebars_widgets' ); // Which sidebars have which widgets, get fresh every time.
-					$new_instance_id = $id_base . '-' . $new_instance_id_number; // Use ID number from new widget instance.
+					$sidebars_widgets                      = get_option( 'sidebars_widgets' ); // Which sidebars have which widgets, get fresh every time.
+					$new_instance_id                       = $id_base . '-' . $new_instance_id_number; // Use ID number from new widget instance.
 					$sidebars_widgets[ $use_sidebar_id ][] = $new_instance_id; // Add new instance to sidebar.
 					update_option( 'sidebars_widgets', $sidebars_widgets ); // Save the amended data.
 

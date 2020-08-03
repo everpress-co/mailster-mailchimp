@@ -35,7 +35,13 @@ class Merlin_Downloader {
 
 		// Check if there was an error and break out.
 		if ( is_wp_error( $content ) ) {
-			Merlin_Logger::get_instance()->error( $content->get_error_message(), array( 'url' => $url, 'filename' => $filename ) );
+			Merlin_Logger::get_instance()->error(
+				$content->get_error_message(),
+				array(
+					'url'      => $url,
+					'filename' => $filename,
+				)
+			);
 
 			return $content;
 		}
@@ -46,7 +52,13 @@ class Merlin_Downloader {
 			return $this->download_directory_path . $filename;
 		}
 
-		Merlin_Logger::get_instance()->error( __( 'The file was not able to save to disk, while trying to download it', '@@textdomain' ), array( 'url' => $url, 'filename' => $filename ) );
+		Merlin_Logger::get_instance()->error(
+			__( 'The file was not able to save to disk, while trying to download it', '@@textdomain' ),
+			array(
+				'url'      => $url,
+				'filename' => $filename,
+			)
+		);
 
 		return false;
 	}
@@ -136,7 +148,7 @@ class Merlin_Downloader {
 		if ( file_exists( $download_directory_path ) ) {
 			$this->download_directory_path = $download_directory_path;
 		} else {
-			$upload_dir = wp_upload_dir();
+			$upload_dir                    = wp_upload_dir();
 			$this->download_directory_path = apply_filters( 'merlin_upload_file_path', trailingslashit( $upload_dir['path'] ) );
 		}
 	}

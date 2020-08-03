@@ -188,7 +188,8 @@ function prefix_merlin_after_import_setup() {
 	$main_menu = get_term_by( 'name', 'Main Menu', 'nav_menu' );
 
 	set_theme_mod(
-		'nav_menu_locations', array(
+		'nav_menu_locations',
+		array(
 			'main-menu' => $main_menu->term_id,
 		)
 	);

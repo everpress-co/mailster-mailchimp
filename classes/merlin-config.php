@@ -18,8 +18,7 @@ if ( ! class_exists( 'MailsterMerlin' ) ) {
  * Set directory locations, text strings, and settings.
  */
 
-$wizard = new MailsterMerlin(
-
+$wizard      = new MailsterMerlin(
 	$config  = array(
 		'directory'            => '../../plugins/mailster-mailchimp/classes/merlin', // Location / directory where Merlin WP is placed in your theme.
 		'plugin_path'          => $this->plugin_path, // Location / directory where Merlin WP is placed in your theme.

@@ -100,11 +100,15 @@ class Merlin_Customizer_Importer {
 			}
 
 			foreach ( $data['options'] as $option_key => $option_value ) {
-				$option = new Merlin_Customizer_Option( $wp_customize, $option_key, array(
-					'default'    => '',
-					'type'       => 'option',
-					'capability' => 'edit_theme_options',
-				) );
+				$option = new Merlin_Customizer_Option(
+					$wp_customize,
+					$option_key,
+					array(
+						'default'    => '',
+						'type'       => 'option',
+						'capability' => 'edit_theme_options',
+					)
+				);
 
 				$option->import( $option_value );
 			}
@@ -177,7 +181,7 @@ class Merlin_Customizer_Importer {
 		if ( ! empty( $file ) ) {
 			// Set variables for storage, fix file filename for query strings.
 			preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
-			$file_array = array();
+			$file_array         = array();
 			$file_array['name'] = basename( $matches[0] );
 
 			// Download file to temp location.

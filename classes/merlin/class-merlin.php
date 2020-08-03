@@ -237,7 +237,8 @@ class Merlin {
 		$this->version();
 
 		$config = wp_parse_args(
-			$config, array(
+			$config,
+			array(
 				'base_path'            => get_parent_theme_file_path(),
 				'base_url'             => get_parent_theme_file_uri(),
 				'directory'            => 'merlin',
@@ -417,7 +418,12 @@ class Merlin {
 		$strings = $this->strings;
 
 		$this->hook_suffix = add_submenu_page(
-			esc_html( $this->parent_slug ), esc_html( $strings['admin-menu'] ), esc_html( $strings['admin-menu'] ), sanitize_key( $this->capability ), sanitize_key( $this->merlin_url ), array( $this, 'admin_page' )
+			esc_html( $this->parent_slug ),
+			esc_html( $strings['admin-menu'] ),
+			esc_html( $strings['admin-menu'] ),
+			sanitize_key( $this->capability ),
+			sanitize_key( $this->merlin_url ),
+			array( $this, 'admin_page' )
 		);
 	}
 
@@ -458,7 +464,9 @@ class Merlin {
 
 			// Check first if TMGPA is included.
 			wp_localize_script(
-				'merlin', 'merlin_params', array(
+				'merlin',
+				'merlin_params',
+				array(
 					'tgm_plugin_nonce' => array(
 						'update'  => wp_create_nonce( 'tgmpa-update' ),
 						'install' => wp_create_nonce( 'tgmpa-install' ),
@@ -472,7 +480,9 @@ class Merlin {
 		} else {
 			// If TMGPA is not included.
 			wp_localize_script(
-				'merlin', 'merlin_params', array(
+				'merlin',
+				'merlin_params',
+				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
 					'wpnonce' => wp_create_nonce( 'merlin_nonce' ),
 					'texts'   => $texts,
@@ -850,7 +860,7 @@ class Merlin {
 			<?php wp_nonce_field( 'merlin' ); ?>
 		</footer>
 
-	<?php
+		<?php
 		$this->logger->debug( __( 'The welcome step has been displayed', '@@textdomain' ) );
 	}
 
@@ -1014,7 +1024,7 @@ class Merlin {
 			<?php endif; ?>
 			<?php wp_nonce_field( 'merlin' ); ?>
 		</footer>
-	<?php
+		<?php
 		$this->logger->debug( __( 'The child theme installation step has been displayed', '@@textdomain' ) );
 	}
 
@@ -1142,7 +1152,7 @@ class Merlin {
 			</footer>
 		</form>
 
-	<?php
+		<?php
 		$this->logger->debug( __( 'The plugin installation step has been displayed', '@@textdomain' ) );
 	}
 
@@ -1226,7 +1236,7 @@ class Merlin {
 			</footer>
 		</form>
 
-	<?php
+		<?php
 		$this->logger->debug( __( 'The content import step has been displayed', '@@textdomain' ) );
 	}
 
@@ -1306,7 +1316,7 @@ class Merlin {
 
 		</footer>
 
-	<?php
+		<?php
 		$this->logger->debug( __( 'The final step has been displayed', '@@textdomain' ) );
 	}
 
@@ -1390,7 +1400,8 @@ class Merlin {
 				array(
 					'done'    => 1,
 					'message' => sprintf(
-						esc_html( $success ), $slug
+						esc_html( $success ),
+						$slug
 					),
 				)
 			);
@@ -1407,7 +1418,8 @@ class Merlin {
 			array(
 				'done'    => 1,
 				'message' => sprintf(
-					esc_html( $already ), $name
+					esc_html( $already ),
+					$name
 				),
 			)
 		);
