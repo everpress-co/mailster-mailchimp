@@ -36,4 +36,4 @@ Import your Lists from Mailchimp into WordPress and use it with the [Mailster Ne
 
 == Additional Info ==
 
-This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailster+Kickbox+Integration&utm_medium=readme) and an account at [Kickbox](https://kickbox.com)
+This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailster+Kickbox+Integration&utm_medium=readme)
