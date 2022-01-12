@@ -2,66 +2,52 @@
 
 class MailsterMailchimpAPI {
 
-	private $domain      = 'api.mailchimp.com';
-	private $version     = '3.0';
-	private $total_items = null;
 
-	public function __construct( $apikey ) {
 
+
+
+	private $domain  = 'api.mailchimp.com';
+	private $version = '3.0';
+
+	public function __construct( $apikey = null ) {
+
+		if ( ! is_null( $apikey ) ) {
+			$this->set_apikey( $apikey );
+		}
+
+	}
+
+	public function set_apikey( $apikey ) {
 		$this->apikey = $apikey;
 		$this->dc     = preg_replace( '/^([a-f0-9]+)-([a-z0-9]+)$/', '$2', $apikey );
 		$this->url    = trailingslashit( 'https://' . $this->dc . '.' . $this->domain . '/' . $this->version );
-
-	}
-
-	public function call( $action, $args = array() ) {
-
-		$response = $this->get( $action, $args );
-
-		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( array( 'error' => $response->get_error_message() ), $response->get_error_code() );
-		}
-
-		return $response;
-
-	}
-
-	public function get_total_items() {
-		return $this->total_items;
 	}
 
 	public function ping() {
-		return $this->call( 'ping' );
+		return $this->get( 'ping' );
 	}
 
 	public function lists( $args = array() ) {
-		$result = $this->call( 'lists', $args );
+		$result = $this->get( 'lists', $args );
 		return isset( $result->lists ) ? $result->lists : array();
 	}
 
 	public function list( $list_id, $args = array() ) {
-		return $this->call( 'lists/' . $list_id, $args );
+		return $this->get( 'lists/' . $list_id, $args );
 	}
 
 	public function members( $list_id, $args = array() ) {
-		$result = $this->call( 'lists/' . $list_id . '/members', $args );
-		return isset( $result->members ) ? $result->members : array();
+		return $this->get( 'lists/' . $list_id . '/members', $args );
 	}
 
-	public function get( $action, $args = array(), $timeout = 15 ) {
+	private function get( $action, $args = array(), $timeout = 15 ) {
 		return $this->do_call( 'GET', $action, $args, $timeout );
 	}
-	public function post( $action, $args = array(), $timeout = 15 ) {
+	private function post( $action, $args = array(), $timeout = 15 ) {
 		return $this->do_call( 'POST', $action, $args, $timeout );
 	}
 
 
-	/**
-	 *
-	 * @access public
-	 * @param unknown $apikey  (optional)
-	 * @return void
-	 */
 	private function do_call( $method, $action, $args = array(), $timeout = 15 ) {
 
 		$url = $this->url . $action;
@@ -80,8 +66,21 @@ class MailsterMailchimpAPI {
 			return new WP_Error( 'method_not_allowed', 'This method is not allowed' );
 		}
 
-		$this->total_items = null;
-		$response          = wp_remote_request(
+		$key = md5(
+			serialize(
+				array(
+					$url,
+					$body,
+					$method,
+				)
+			)
+		);
+
+		if ( false !== ( $body = get_transient( 'mailster_mailchimp_api_request_' . $key ) ) ) {
+			return $body;
+		}
+
+		$response = wp_remote_request(
 			$url,
 			array(
 				'method'  => $method,
@@ -100,14 +99,13 @@ class MailsterMailchimpAPI {
 
 		if ( 200 != $code ) {
 
-			return new WP_Error( $body->status, $body->title . ': ' . $body->detail, $body );
+			$return = new WP_Error( $body->status, $body->title . ': ' . $body->detail, $body );
+
+			return $return;
 
 		}
 
-		if ( isset( $body->total_items ) ) {
-			$this->total_items = $body->total_items;
-		}
-
+		set_transient( 'mailster_mailchimp_api_request_' . $key, $body, 120 );
 		return $body;
 
 	}
