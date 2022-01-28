@@ -2,7 +2,7 @@
 Contributors: everpress
 Tags: mailster, newsletter, mailchimp
 Requires at least: 4.6
-Tested up to: 5.8
+Tested up to: 5.9
 Stable tag: 2.0
 License: GPLv2 or later
 Author: EverPress
