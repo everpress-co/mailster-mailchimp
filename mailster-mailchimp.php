@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Mailchimp Importer for Mailster
-Plugin URI: https://mailster.co/?utm_campaign=wporg&utm_source=Mailchimp&utm_medium=plugin
+Plugin URI: https://mailster.co/?utm_campaign=wporg&utm_source=wordpress.org&utm_medium=plugin&utm_term=Mailchimp
 Description: Import your Lists from Mailchimp into WordPress and use it with the Mailster Newsletter Plugin for WordPress.
 Version: 2.0
 Author: EverPress
