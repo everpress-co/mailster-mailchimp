@@ -14,7 +14,6 @@ class MailsterImportMailchimp extends MailsterImport {
 	private $api;
 
 	function init() {
-
 	}
 
 	public function api() {
@@ -61,15 +60,13 @@ class MailsterImportMailchimp extends MailsterImport {
 			}
 
 			$lists[ $list->id ] = array(
-				'id'           => $list->id,
-				'name'         => $list->name,
-				'total'        => $total,
-				'merge_fields' => $list->stats->merge_field_count,
+				'id'    => $list->id,
+				'name'  => $list->name,
+				'total' => $total,
 			);
 		}
 
 		return $lists;
-
 	}
 
 	function get_statuses() {
@@ -93,7 +90,6 @@ class MailsterImportMailchimp extends MailsterImport {
 			);
 		}
 		return $return;
-
 	}
 
 	public function valid_credentials() {
@@ -121,11 +117,10 @@ class MailsterImportMailchimp extends MailsterImport {
 
 	public function get_import_part( &$import_data ) {
 
-		$list_id      = $import_data['extra']['selected_lists'][ $import_data['extra']['current_list'] ];
-		$merge_fields = $import_data['extra']['merge_fields'];
-		$statuses     = $import_data['extra']['selected_statuses'];
-		$offset       = $import_data['extra']['offset'];
-		$limit        = $import_data['performance'] ? 20 : 250;
+		$list_id  = $import_data['extra']['selected_lists'][ $import_data['extra']['current_list'] ];
+		$statuses = $import_data['extra']['selected_statuses'];
+		$offset   = $import_data['extra']['offset'];
+		$limit    = $import_data['performance'] ? 20 : 250;
 
 		$api_result = $this->api()->members(
 			$list_id,
@@ -147,18 +142,17 @@ class MailsterImportMailchimp extends MailsterImport {
 		$listname = $lists[ $list_id ]['name'];
 
 		foreach ( $api_result->members as $entry ) {
-			$e      = $this->map_entry( $entry, $merge_fields, $listname );
-			$data[] = $e;
+			$e      = $this->map_entry( $entry, $listname );
+			$data[] = array_values( $e );
 		}
 
 		$import_data['extra']['offset'] += $limit;
 		if ( $count < $limit && isset( $import_data['extra']['selected_lists'][ $import_data['extra']['current_list'] + 1 ] ) ) {
 			$import_data['extra']['offset'] = 0;
-			$import_data['extra']['current_list']++;
+			++$import_data['extra']['current_list'];
 		}
 
 		return $data;
-
 	}
 
 
@@ -166,10 +160,10 @@ class MailsterImportMailchimp extends MailsterImport {
 
 		parse_str( $_POST['data'], $import_options );
 
-		$sample_size  = 10;
-		$total        = 0;
-		$merge_fields = 0;
-		$current_list = null;
+		$sample_size = 10;
+		$total       = 0;
+
+		$col_count = 0;
 
 		$data = array();
 
@@ -180,9 +174,8 @@ class MailsterImportMailchimp extends MailsterImport {
 			// for each selected list
 			foreach ( $import_options['lists'] as $list_id ) {
 
-				$listname     = $lists[ $list_id ]['name'];
-				$total       += $lists[ $list_id ]['total'];
-				$merge_fields = max( $merge_fields, $lists[ $list_id ]['merge_fields'] );
+				$listname = $lists[ $list_id ]['name'];
+				$total   += $lists[ $list_id ]['total'];
 
 				// get two members as sample
 				$api_result = $this->api()->members(
@@ -194,47 +187,36 @@ class MailsterImportMailchimp extends MailsterImport {
 				);
 
 				if ( is_wp_error( $api_result ) ) {
-						  return $api_result;
+					return $api_result;
 				}
 
 				foreach ( $api_result->members as $entry ) {
-					$e      = $this->map_entry( $entry, $merge_fields, $listname );
+					$e     = $this->map_entry( $entry, $listname );
+					$count = count( $e );
+					if ( $count > $col_count ) {
+						$header    = array_keys( $e );
+						$col_count = max( $col_count, $count );
+
+					}
 					$data[] = $e;
 				}
 			}
 		}
 
-		$header               = array();
-		$header['email']      = 'email';
-		$header['first_last'] = 'first_last';
-		$header['_lists']     = 'lists';
-		for ( $i = 0; $i < $merge_fields; $i++ ) {
-			$header[ '_merge_field_' . $i ] = 'merge_field_' . $i;
+		$header_array = array();
+		foreach ( $header as $key => $value ) {
+			$header_array[ $value ] = preg_replace( '/^_(.*)/', '$1', $value );
 		}
-		$header['_status']     = 'status';
-		$header['_ip_signup']  = 'ip_signup';
-		$header['_signup']     = 'signup';
-		$header['_ip_confirm'] = 'ip_confirm';
-		$header['_confirm']    = 'confirm';
-		$header['_lang']       = 'lang';
-		$header['_tags']       = 'tags';
-		$header['_lat']        = 'lat';
-		$header['_long']       = 'long';
-		$header['_country']    = 'country';
-		$header['_timeoffset'] = 'timeoffset';
-		$header['_timezone']   = 'timezone';
-
 		return array(
 			'total'    => $total,
 			'removed'  => null,
-			'header'   => $header,
+			'header'   => $header_array,
 			'sample'   => $data,
 			'extra'    => array(
 				'current_list'      => 0,
 				'offset'            => 0,
 				'selected_lists'    => array_values( $import_options['lists'] ),
 				'selected_statuses' => array_values( $import_options['statuses'] ),
-				'merge_fields'      => $merge_fields,
 			),
 			'defaults' => array(
 				'existing' => 'merge',
@@ -242,39 +224,42 @@ class MailsterImportMailchimp extends MailsterImport {
 		);
 	}
 
-	private function map_entry( $entry, $max_merge_fields, $listnames ) {
+	private function map_entry( $entry, $listnames ) {
 
-		$merge_fields = array_values( (array) $entry->merge_fields );
+		$maped = array();
 
-		$maped[] = $entry->email_address;
-		$maped[] = $entry->full_name;
-		$maped[] = $listnames;
-		for ( $i = 0; $i < $max_merge_fields; $i++ ) {
-			$maped[] = isset( $merge_fields[ $i ] ) ? $merge_fields[ $i ] : null;
+		$maped['email']    = $entry->email_address;
+		$maped['fullname'] = $entry->full_name;
+		$maped['_lists']   = $listnames;
+
+		foreach ( $entry->merge_fields as $merge_tag => $value ) {
+			if ( is_object( $value ) ) {
+				$maped[ '_merge_field_' . $merge_tag ] = implode( ' ', (array) $value );
+			} else {
+				$maped[ '_merge_field_' . $merge_tag ] = $value;
+			}
 		}
-		$maped[] = $this->map_status( $entry->status );
-		$maped[] = $entry->ip_signup;
-		$maped[] = $entry->timestamp_signup;
-		$maped[] = $entry->ip_opt;
-		$maped[] = $entry->timestamp_opt;
-		$maped[] = $entry->language;
+		$maped['_status']     = $this->map_status( $entry->status );
+		$maped['_ip_signup']  = $entry->ip_signup;
+		$maped['_signup']     = $entry->timestamp_signup;
+		$maped['_ip_confirm'] = $entry->ip_opt;
+		$maped['_confirm']    = $entry->timestamp_opt;
+		$maped['_lang']       = $entry->language;
 
-		$maped[] = implode( ',', wp_list_pluck( $entry->tags, 'name' ) );
-		$maped[] = $entry->location->latitude ? $entry->location->latitude : null;
-		$maped[] = $entry->location->longitude ? $entry->location->longitude : null;
-		$maped[] = $entry->location->country_code;
-		$maped[] = $entry->location->gmtoff;
-		$maped[] = $entry->location->timezone;
+		$maped['_tags']       = implode( ',', wp_list_pluck( $entry->tags, 'name' ) );
+		$maped['_lat']        = $entry->location->latitude ? $entry->location->latitude : null;
+		$maped['_long']       = $entry->location->longitude ? $entry->location->longitude : null;
+		$maped['_country']    = $entry->location->country_code;
+		$maped['_timeoffset'] = $entry->location->gmtoff;
+		$maped['_timezone']   = $entry->location->timezone;
 
 		return $maped;
-
 	}
 
 	private function map_status( $org_status ) {
 
 		$statuses = $this->get_statuses();
 		return isset( $statuses[ $org_status ] ) ? $statuses[ $org_status ]['mapped'] : null;
-
 	}
 
 	protected function credentials_form() {
@@ -297,5 +282,4 @@ class MailsterImportMailchimp extends MailsterImport {
 		$insert['referer'] = 'mailchimp';
 		return $insert;
 	}
-
 }
