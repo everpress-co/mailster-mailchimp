@@ -2,19 +2,17 @@
 
 class MailsterMailchimpAPI {
 
-
-
-
-
 	private $domain  = 'api.mailchimp.com';
 	private $version = '3.0';
+	private $apikey;
+	private $dc;
+	private $url;
 
 	public function __construct( $apikey = null ) {
 
 		if ( ! is_null( $apikey ) ) {
 			$this->set_apikey( $apikey );
 		}
-
 	}
 
 	public function set_apikey( $apikey ) {
@@ -30,6 +28,10 @@ class MailsterMailchimpAPI {
 	public function lists( $args = array() ) {
 		$result = $this->get( 'lists', $args );
 		return isset( $result->lists ) ? $result->lists : array();
+	}
+
+	public function merge_fields( $list_id, $args = array() ) {
+		return $this->get( 'lists/' . $list_id . '/merge-fields', $args );
 	}
 
 	public function list( $list_id, $args = array() ) {
@@ -76,8 +78,8 @@ class MailsterMailchimpAPI {
 			)
 		);
 
-		if ( false !== ( $body = get_transient( 'mailster_mailchimp_api_request_' . $key ) ) ) {
-			return $body;
+		if ( false !== ( $cached_body = get_transient( 'mailster_mailchimp_api_request_' . $key ) ) ) {
+			return $cached_body;
 		}
 
 		$response = wp_remote_request(
@@ -107,7 +109,5 @@ class MailsterMailchimpAPI {
 
 		set_transient( 'mailster_mailchimp_api_request_' . $key, $body, 120 );
 		return $body;
-
 	}
-
 }

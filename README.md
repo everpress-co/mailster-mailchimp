@@ -1,15 +1,15 @@
 # Mailchimp Importer for Mailster
 
-Contributors: everpress  
+Contributors: everpress, mailster, xaverb  
 Tags: mailster, newsletter, mailchimp  
-Requires at least: 4.6  
-Tested up to: 5.9  
-Stable tag: 2.0  
+Requires at least: 6.0  
+Tested up to: 6.5  
+Stable tag: 2.0.1  
 License: GPLv2 or later
 
 ## Description
 
-Import your Lists from Mailchimp into WordPress and use it with the [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailchimp).
+Import your Lists from Mailchimp into WordPress and use it with the [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=wordpress.org&utm_medium=readme&utm_term=Mailchimp).
 
 ## Installation
 
@@ -19,24 +19,28 @@ Import your Lists from Mailchimp into WordPress and use it with the [Mailster Ne
 
 ## Changelog
 
+### 2.0.1
+
+- improved: betters support for Mailster 4.0
+
 ### 2.0
 
--   updated: works now only with Mailster 3.1
+- updated: works now only with Mailster 3.1
 
 ### 1.0.2
 
--   fixed: missing script files
+- fixed: missing script files
 
 ### 1.0.1
 
--   fixed: Call to a member function get_tgmpa_url() on null
+- fixed: Call to a member function get_tgmpa_url() on null
 
 ### 1.0
 
--   initial release
+- initial release
 
 ## Upgrade Notice
 
 ## Additional Info
 
-This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailster+Kickbox+Integration&utm_medium=readme)
+This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=wordpress.org&utm_medium=readme&utm_term=Mailchimp)
